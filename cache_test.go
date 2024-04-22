@@ -2,11 +2,13 @@ package plugin_simplecache
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestNew(t *testing.T) {
@@ -16,9 +18,9 @@ func TestNew(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "should error if path is not valid",
-			cfg:     &Config{Path: "/foo/bar", MaxExpiry: 300, Cleanup: 600},
-			wantErr: true,
+			name:    "should not error if path is not valid",
+			cfg:     &Config{Path: fmt.Sprintf("%s/foo_%d", os.TempDir(), time.Now().Unix()), MaxExpiry: 300, Cleanup: 600},
+			wantErr: false,
 		},
 		{
 			name:    "should error if maxExpiry <= 1",

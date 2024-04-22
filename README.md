@@ -36,8 +36,8 @@ http:
 
 #### Path (`path`)
 
-The base path that files will be created under. This must be a valid existing
-filesystem path.
+The base path that files will be created under. This must be a valid filesystem
+path. If the path does not exist, it will be created.
 
 #### Max Expiry (`maxExpiry`)
 

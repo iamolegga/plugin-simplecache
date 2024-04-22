@@ -25,7 +25,18 @@ type fileCache struct {
 func newFileCache(path string, vacuum time.Duration) (*fileCache, error) {
 	info, err := os.Stat(path)
 	if err != nil {
-		return nil, fmt.Errorf("invalid cache path: %w", err)
+		if !os.IsNotExist(err) {
+			return nil, fmt.Errorf("invalid cache path: %w", err)
+		}
+
+		if err = os.MkdirAll(path, 0700); err != nil {
+			return nil, fmt.Errorf("error creating cache path: %w", err)
+		}
+
+		info, err = os.Stat(path)
+		if err != nil {
+			return nil, fmt.Errorf("invalid cache path: %w", err)
+		}
 	}
 
 	if !info.IsDir() {

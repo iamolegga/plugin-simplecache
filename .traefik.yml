@@ -1,7 +1,7 @@
-displayName: Simple Cache
+displayName: Simple Cache (Fork)
 summary: Simple cache plugin middleware caches responses on disk.
 type: middleware
-import: github.com/traefik/plugin-simplecache
+import: github.com/iamolegga/plugin-simplecache
 compatibility: TODO
 testData:
   path: /tmp
