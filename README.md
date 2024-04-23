@@ -11,8 +11,16 @@ Static:
 
 ```toml
 [experimental.plugins.cache]
-  modulename = "github.com/traefik/plugin-simplecache"
-  version = "v0.2.1"
+  modulename = "github.com/iamolegga/plugin-simplecache"
+  version = "v0.3.0"
+```
+
+```yaml
+experimental:
+  plugins:
+    cache:
+      moduleName: "github.com/iamolegga/plugin-simplecache"
+      version: "v0.3.0"
 ```
 
 Dynamic:
