@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v3.0
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--experimental.localPlugins.cache.modulename=github.com/iamolegga/plugin-simplecache"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ".:/plugins-local/src/github.com/iamolegga/plugin-simplecache"
+
+  hit_counter:
+    image: node:20-alpine
+    command: >
+      sh -c "echo 'const http = require(\"http\"); let count = 0; http.createServer((req, res) => { res.end(`Hit count: $${++count}`); }).listen(3000);' > server.js && node server.js"
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.hit_counter.rule=HostRegexp(`.*`)"
+        - "traefik.http.routers.hit_counter.middlewares=hit_counter_cache"
+        - "traefik.http.services.hit_counter.loadbalancer.server.port=3000"
+        - "traefik.http.middlewares.hit_counter_cache.plugin.cache.path=/tmp/cache"
+        - "traefik.http.middlewares.hit_counter_cache.plugin.cache.maxExpiry=5"
+        - "traefik.http.middlewares.hit_counter_cache.plugin.cache.cleanup=10"
+        - "traefik.http.middlewares.hit_counter_cache.plugin.cache.force=true"

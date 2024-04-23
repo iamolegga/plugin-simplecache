@@ -18,6 +18,7 @@ type Config struct {
 	MaxExpiry       int    `json:"maxExpiry" yaml:"maxExpiry" toml:"maxExpiry"`
 	Cleanup         int    `json:"cleanup" yaml:"cleanup" toml:"cleanup"`
 	AddStatusHeader bool   `json:"addStatusHeader" yaml:"addStatusHeader" toml:"addStatusHeader"`
+	Force           bool   `json:"force" yaml:"force" toml:"force"`
 }
 
 // CreateConfig returns a config instance.
@@ -136,6 +137,11 @@ func (m *cache) cacheable(r *http.Request, w http.ResponseWriter, status int) (t
 		return 0, false
 	}
 
+	if expireBy.IsZero() && m.cfg.Force {
+		// no cache-related headers, use default expiry
+		return time.Duration(m.cfg.MaxExpiry) * time.Second, true
+	}
+
 	expiry := time.Until(expireBy)
 	maxExpiry := time.Duration(m.cfg.MaxExpiry) * time.Second
 
@@ -154,10 +160,6 @@ type responseWriter struct {
 	http.ResponseWriter
 	status int
 	body   []byte
-}
-
-func (rw *responseWriter) Header() http.Header {
-	return rw.ResponseWriter.Header()
 }
 
 func (rw *responseWriter) Write(p []byte) (int, error) {

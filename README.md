@@ -12,7 +12,7 @@ Static:
 ```toml
 [experimental.plugins.cache]
   modulename = "github.com/iamolegga/plugin-simplecache"
-  version = "v0.3.0"
+  version = "v0.4.0"
 ```
 
 ```yaml
@@ -66,3 +66,15 @@ The number of seconds to wait between cache cleanup runs.
 
 This determines if the cache status header `Cache-Status` will be added to the
 response headers. This header can have the value `hit`, `miss` or `error`.
+
+#### Force (`force`)
+
+*Default: false*
+
+This determines if responses without special cache-related headers should be
+cached. If this is set to `true`, responses without special headers will be
+cached for the `maxExpiry` cache time. If this is set to `false`, responses
+without special cache-related headers will not be cached (as in the 
+[original plugin](https://github.com/traefik/plugin-simplecache)). Works only
+if [cachecontrol](https://github.com/pquerna/cachecontrol) unable to find any
+reason not to cache the response (due to headers, method, status code, etc.).
